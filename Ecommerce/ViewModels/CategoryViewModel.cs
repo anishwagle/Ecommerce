@@ -1,12 +1,12 @@
-﻿namespace Ecommerce.Models
+﻿namespace Ecommerce.ViewModels
 {
-    public class Category
+    public class CategoryViewModel
     {
+
         public string Id { get; set; }
         public string Name { get; set; }
-        public string ImageId { get; set; }
         public string Color { get; set; }
         public string Size { get; set; }
-        public Image Image { get; set; }
+        public IFormFile? Image { get; set; }
     }
 }
