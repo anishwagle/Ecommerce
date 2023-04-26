@@ -21,6 +21,8 @@ namespace Ecommerce
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             builder.Services.AddScoped<CarouselViewComponent>();
+            builder.Services.AddScoped<NavCategoryViewComponent>();
+            builder.Services.AddScoped<CategoryViewComponent>();
             builder.Services.AddControllersWithViews();
 
             var app = builder.Build();
