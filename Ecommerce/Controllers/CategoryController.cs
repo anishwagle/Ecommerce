@@ -9,9 +9,12 @@ using Ecommerce.Data;
 using Ecommerce.Models;
 using Ecommerce.ViewModels;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Ecommerce.Controllers
 {
+    [Authorize(Roles = "admin")]
+
     public class CategoryController : Controller
     {
         private readonly ApplicationDbContext _context;

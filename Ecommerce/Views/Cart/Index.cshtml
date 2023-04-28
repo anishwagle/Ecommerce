@@ -1,9 +1,7 @@
-﻿@model IEnumerable<Ecommerce.Models.Carousel>
+﻿@model IEnumerable<Ecommerce.Models.Cart>
 
 @{
     ViewData["Title"] = "Index";
-    Layout = "~/Views/Shared/_AdminLayout.cshtml";
-
 }
 
 <h1>Index</h1>
@@ -15,16 +13,13 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Heading)
+                @Html.DisplayNameFor(model => model.User)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.SubHeading)
+                @Html.DisplayNameFor(model => model.Product)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ButtonUrl)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Image)
+                @Html.DisplayNameFor(model => model.Quantity)
             </th>
             <th></th>
         </tr>
@@ -33,16 +28,13 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Heading)
+                @Html.DisplayFor(modelItem => item.User.Id)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.SubHeading)
+                @Html.DisplayFor(modelItem => item.Product.Id)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.ButtonUrl)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Image.Id)
+                @Html.DisplayFor(modelItem => item.Quantity)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

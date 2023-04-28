@@ -11,6 +11,6 @@
         public List<IFormFile>? Images { get; set; }
         public List<string>? Categories { get; set; }
         public List<string>? ImagePaths { get; set; }
-
+        public int? Quantity { get; set; }
     }
 }

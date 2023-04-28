@@ -10,9 +10,11 @@ using Ecommerce.Models;
 using Ecommerce.ViewModels;
 using System.Xml.Linq;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Ecommerce.Controllers
 {
+    [Authorize(Roles = "admin")]
     public class ProductController : Controller
     {
         private readonly ApplicationDbContext _context;

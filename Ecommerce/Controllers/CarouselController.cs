@@ -8,9 +8,12 @@ using Microsoft.EntityFrameworkCore;
 using Ecommerce.Data;
 using Ecommerce.Models;
 using Ecommerce.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Ecommerce.Controllers
 {
+    [Authorize(Roles = "admin")]
+
     public class CarouselController : Controller
     {
         private readonly ApplicationDbContext _context;
