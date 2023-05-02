@@ -27,8 +27,23 @@ namespace Ecommerce.Controllers
         // GET: Cart
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Carts.Include(c => c.Product).Include(c => c.User);
-            return View(await applicationDbContext.ToListAsync());
+            var applicationDbContext = _context.Carts.Include(c => c.Product).Include(c => c.User).ToList();
+            var response = new List<CartViewModel>();
+            foreach(var item in applicationDbContext)
+            {
+                response.Add(new CartViewModel {
+                Id= item.Id,
+                ProductId =item.ProductId,
+                Quantity = item.Quantity,
+                Product =  new ProductViewModel
+                {
+                    Name = item.Product.Name,
+                    Price = item.Product.HasDiscount? item.Product.Price - item.Product.Price*item.Product.Discount : item.Product.Price,
+                    Quantity = item.Quantity,
+                }
+                });
+            }
+            return View(response);
         }
 
         [HttpPost]
@@ -62,7 +77,7 @@ namespace Ecommerce.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> RemoveFromCart([Bind("Id")] ProductViewModel product)
+        public async Task<IActionResult> UpdateCart([Bind("Id", "Quantity")] ProductViewModel product)
         {
             if (product == null)
             {
@@ -73,11 +88,25 @@ namespace Ecommerce.Controllers
             var cartProd = _context.Carts.Where(x => x.UserId == userId && x.ProductId == product.Id).FirstOrDefault();
             if (cartProd != null)
             {
+                cartProd.Quantity = (int)product.Quantity;
+                _context.Update(cartProd);
+            }
+            
+            _context.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
+        public async Task<IActionResult> RemoveFromCart(string id)
+        {
+            var userId = _userManager.GetUserId(User);
+            var cartProd = _context.Carts.Where(x => x.UserId == userId && x.ProductId == id).FirstOrDefault();
+            if (cartProd != null)
+            {
                 _context.Carts.Remove(cartProd);
             }
             
             _context.SaveChanges();
-            return RedirectToAction("Details", "Shop", new { id = product.Id });
+            return RedirectToAction("Index");
         }
     }
 }

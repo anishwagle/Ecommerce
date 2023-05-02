@@ -45,24 +45,27 @@
             @if (User.Identity.IsAuthenticated)
             {
                 <form asp-controller="Cart" asp-action="AddToCart" method="post">
-                    <div class="d-flex align-items-center mb-4 pt-2">
-                <div class="input-group quantity mr-3" style="width: 130px;">
-                    <div class="input-group-btn">
-                        <button type="button" class="btn btn-primary btn-minus">
-                            <i class="fa fa-minus"></i>
-                        </button>
-                    </div>
-                    <input asp-for="Id" type="hidden" class="form-control bg-secondary text-center"/>
+                    <input type="hidden" asp-for="@Model.Id" class="form-control bg-secondary text-center">
 
-                    <input asp-for="Quantity" type="text" class="form-control bg-secondary text-center" value="1"/>
-                    <div class="input-group-btn">
-                        <button type="button" class="btn btn-primary btn-plus">
-                            <i class="fa fa-plus"></i>
-                        </button>
+                    <div class="d-flex align-items-center mb-4 pt-2">
+
+                        <div class="input-group quantity mr-3" style="width: 130px;">
+                            <div class="input-group-btn">
+                                <button type="button" class="btn btn-primary btn-minus">
+                                    <i class="fa fa-minus"></i>
+                                </button>
+                            </div>
+                            <input type="text" asp-for="@Model.Quantity" class="form-control bg-secondary text-center" value="1">
+                            <div class="input-group-btn">
+                                <button type="button" class="btn btn-primary btn-plus">
+                                    <i class="fa fa-plus"></i>
+                                </button>
+                            </div>
+
+                        </div>
+                        <button class="btn btn-primary px-3"><i class="fa fa-shopping-cart mr-1"></i> Add To Cart</button>
+
                     </div>
-                </div>
-                <button type="submit" class="btn btn-primary px-3"><i class="fa fa-shopping-cart mr-1"></i> Add To Cart</button>
-            </div>
                 </form>
                 }else{
                 <a asp-area="Identity" asp-page="/Account/Login">Login To Add To Cart</a>

@@ -102,6 +102,7 @@ namespace Ecommerce.Controllers
                 HasDiscount = product.HasDiscount,
                 Name = product.Name,
                 Price = product.Price,
+                Quantity=0
             });
         }
 
