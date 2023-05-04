@@ -4,6 +4,7 @@ using Ecommerce.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ecommerce.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230503021235_order")]
+    partial class order
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -55,10 +57,6 @@ namespace Ecommerce.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Phone")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("State")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -308,8 +306,8 @@ namespace Ecommerce.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "fc34bc2b-5e69-4f46-be38-44356ea704ca",
-                            ConcurrencyStamp = "8857e60b-2dff-40c6-aa17-75302b6af726",
+                            Id = "ac242011-5c8c-404c-bff8-fea069b10d45",
+                            ConcurrencyStamp = "5052586a-f7ed-4843-8ebe-c1de0ac29b8d",
                             Name = "admin",
                             NormalizedName = "ADMIN"
                         });
@@ -572,7 +570,7 @@ namespace Ecommerce.Data.Migrations
             modelBuilder.Entity("Ecommerce.Models.OrderItem", b =>
                 {
                     b.HasOne("Ecommerce.Models.Order", "Order")
-                        .WithMany("Items")
+                        .WithMany()
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -656,11 +654,6 @@ namespace Ecommerce.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("Ecommerce.Models.Order", b =>
-                {
-                    b.Navigation("Items");
                 });
 #pragma warning restore 612, 618
         }

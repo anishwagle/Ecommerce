@@ -24,5 +24,8 @@ namespace Ecommerce.Data
         public DbSet<ImageProductHelper> ImageProductHelpers { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductCategoryHelper> ProductCategoryHelpers { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderItem> OrderItems { get; set; }
+        public DbSet<Address> Addresses { get; set; }
     }
 }
