@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Ecommerce.Models;
+using Microsoft.AspNetCore.Identity;
 
-namespace Ecommerce.Models
+namespace Ecommerce.ViewModels
 {
-    public class Order
+    public class OrderViewModel
     {
         public string Id { get; set; }
         public string UserId { get; set; }
@@ -10,13 +11,6 @@ namespace Ecommerce.Models
         public OrderStatus Status { get; set; }
         public string BillingAddressId { get; set; }
         public Address BillingAddress { get; set; }
-    }
-
-    public enum OrderStatus
-    {
-        Pending,
-        Apporved,
-        Cancel,
-        Complete
+        public List<OrderItem> Items { get; set; }
     }
 }

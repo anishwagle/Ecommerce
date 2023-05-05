@@ -25,6 +25,7 @@ namespace Ecommerce.Controllers
         }
 
         // GET: Order
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Index()
         {
             var applicationDbContext = _context.Orders.Include(o => o.BillingAddress).Include(o => o.User);
@@ -71,28 +72,57 @@ namespace Ecommerce.Controllers
                     }
                 });
             });       
-                return View(new Order { BillingAddress = new Address(),Items = items});
+                return View(new OrderViewModel { BillingAddress = new Address(),Items = items});
         }
 
         // POST: Order/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("BillingAddress")] Order order)
+        public async Task<IActionResult> Create([Bind("BillingAddress")] OrderViewModel order)
         {
-            if (ModelState.IsValid)
+            if(String.IsNullOrEmpty(order.BillingAddress.FirstName) || String.IsNullOrEmpty(order.BillingAddress.LastName) || String.IsNullOrEmpty(order.BillingAddress.Email) ||
+                String.IsNullOrEmpty(order.BillingAddress.Country) || String.IsNullOrEmpty(order.BillingAddress.Address1) || String.IsNullOrEmpty(order.BillingAddress.City) ||
+                String.IsNullOrEmpty(order.BillingAddress.Phone) || String.IsNullOrEmpty(order.BillingAddress.State))
             {
-                _context.Add(order);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return NotFound();
             }
-            ViewData["BillingAddressId"] = new SelectList(_context.Addresses, "Id", "Id", order.BillingAddressId);
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", order.UserId);
-            return View(order);
+            var userId = _userManager.GetUserId(User);
+            order.BillingAddress.Id = Guid.NewGuid().ToString();
+            _context.Add(order.BillingAddress);
+            var orderModel = new Order() {
+            Id =  Guid.NewGuid().ToString(),
+            UserId = userId,
+            BillingAddressId= order.BillingAddress.Id,
+            Status = OrderStatus.Pending,
+            };
+            _context.Add(orderModel);
+
+            var cartItems = _context.Carts.Include(x => x.Product).Where(x => x.UserId == userId).ToList();
+            cartItems.ForEach(item =>
+            {
+               var orderItem = new OrderItem
+                {
+                   Id = Guid.NewGuid().ToString(),
+                    Quantity = item.Quantity,
+                     OrderId = orderModel.Id,
+                     ProductId =  item.ProductId,
+                    
+                };
+
+                _context.Add(orderItem);
+                _context.Remove(item);
+            });
+            _context.SaveChanges();
+            return RedirectToAction("Index","Home");
         }
 
         // GET: Order/Edit/5
+
+        [Authorize(Roles = "admin")]
+
         public async Task<IActionResult> Edit(string id)
         {
             if (id == null || _context.Orders == null)
@@ -113,38 +143,29 @@ namespace Ecommerce.Controllers
         // POST: Order/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "admin")]
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id,UserId,Status,BillingAddressId")] Order order)
+        public async Task<IActionResult> Edit(string id, [Bind("Id,Status")] Order order)
         {
             if (id != order.Id)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            var orderModel = _context.Orders.Find(id);
+            if (orderModel == null)
             {
-                try
-                {
-                    _context.Update(order);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!OrderExists(order.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                return NotFound();
             }
-            ViewData["BillingAddressId"] = new SelectList(_context.Addresses, "Id", "Id", order.BillingAddressId);
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", order.UserId);
-            return View(order);
+            
+            orderModel.Status = order.Status;
+            _context.Update(orderModel);
+            _context.SaveChanges();
+                return RedirectToAction(nameof(Index));
+            
+           
         }
 
         // GET: Order/Delete/5
@@ -168,6 +189,8 @@ namespace Ecommerce.Controllers
         }
 
         // POST: Order/Delete/5
+        [Authorize(Roles = "admin")]
+
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
